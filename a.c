@@ -1,11 +1,11 @@
-#pragma config(Sensor, dgtl1,  Shift,          sensorDigitalOut)
+.#pragma config(Sensor, dgtl1,  Shift,          sensorDigitalOut)
 #pragma config(Motor,  port1,           LIntake,       tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           FRBase,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           FLBase,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           BRBase,        tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           BLBase,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port6,           LTrans,        tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port7,           RTrans,        tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           RTrans,        tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port7,           LTrans,        tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           LLift,         tmotorVex393HighSpeed_MC29, openLoop)
 #pragma config(Motor,  port9,           RLift,         tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port10,          RIntake,       tmotorVex393_HBridge, openLoop)
@@ -18,7 +18,7 @@ task main()
 	SensorValue[Shift] = 0;
 	while(true)
 	{
-		if(trans == false)
+		if(trans == true)
 		{
 			motor[LTrans] = vexRT[Ch3];
 			motor[FLBase] = vexRT[Ch3];
@@ -43,15 +43,13 @@ task main()
 	 		}
 	 		if(vexRT[Btn8U] == 1)
 	 		{
-	 			trans = true;
+	 			trans = false;
 	 			SensorValue[Shift] = 1;
-	 			motor[LTrans] = 127;
-	 			motor[RTrans] = 127;
 	 			wait10Msec(50);
 	 		}
 	 		if(vexRT[Btn8D] == 1)
 	 		{
-	 			trans = true;
+	 			trans = false;
 	 			SensorValue[Shift] = 1;
 	 			for(int x=0; x<5; x++)
 	 			{
@@ -76,7 +74,7 @@ task main()
 	 			}
 	 		}
 		}
-		if(trans == true)
+		if(trans == false)
 		{
 			motor[FLBase] = vexRT[Ch3];
 			motor[BLBase] = vexRT[Ch3];
@@ -105,7 +103,14 @@ task main()
 	 		}
 	 		if(vexRT[Btn8U] == 1)
 	 		{
-	 			trans = false;
+	 			trans = true;
+	 			SensorValue[Shift] = 0;
+	 			wait10Msec(50);
+	 		}
+	 		/*
+	 		if(vexRT[Btn8U] == 1)
+	 		{
+	 			trans = true;
 	 			motor[LTrans] = 127;
 	 			motor[RTrans] = 127;
 	 			SensorValue[Shift] = 0;
@@ -113,7 +118,7 @@ task main()
 	 		}
 	 		if(vexRT[Btn8D] == 1)
 	 		{
-	 			trans = false;
+	 			trans = true;
 	 			motor[LTrans] = 127;
 	 			motor[RTrans] = 127;
 	 			SensorValue[Shift] = 0;
@@ -138,7 +143,8 @@ task main()
 	 				motor[BRBase] = -50;
 	 				wait10Msec(5);
 	 			}
-	 		}
+	 			*/
+
 		}
 		if(vexRT[Btn6U] == 1)
 		{
