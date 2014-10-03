@@ -18,7 +18,7 @@ task main()
 	SensorValue[Shift] = 0;
 	while(true)
 	{
-		if(trans == true)
+		if(SensorValue[Shift] == 1)
 		{
 			motor[LTrans] = vexRT[Ch3];
 			motor[FLBase] = vexRT[Ch3];
@@ -28,13 +28,13 @@ task main()
 	 		motor[BRBase] = vexRT[Ch2];
 	 		if(vexRT[Btn5D] == 1)
 	 		{
-	 			motor[LLift] = 100;
-	 			motor[RLift] = 100;
+	 			motor[LLift] = 127;
+	 			motor[RLift] = 127;
 	 		}
 	 		else if(vexRT[Btn5U] == 1)
 	 		{
-	 			motor[LLift] = -100;
-	 			motor[RLift] = -100;
+	 			motor[LLift] = -127;
+	 			motor[RLift] = -127;
 	 		}
 	 		else
 	 		{
@@ -44,9 +44,10 @@ task main()
 	 		if(vexRT[Btn8U] == 1)
 	 		{
 	 			trans = false;
-	 			SensorValue[Shift] = 1;
+	 			SensorValue[Shift] = 0;
 	 			wait10Msec(50);
 	 		}
+	 		/*
 	 		if(vexRT[Btn8D] == 1)
 	 		{
 	 			trans = false;
@@ -72,9 +73,10 @@ task main()
 	 				motor[BRBase] = -50;
 	 				wait10Msec(5);
 	 			}
-	 		}
+	 			*/
+
 		}
-		if(trans == false)
+		if(SensorValue[Shift] == 0)
 		{
 			motor[FLBase] = vexRT[Ch3];
 			motor[BLBase] = vexRT[Ch3];
@@ -82,17 +84,17 @@ task main()
 	 		motor[BRBase] = vexRT[Ch2];
 	 		if(vexRT[Btn5D] == 1)
 	 		{
-	 			motor[LLift] = 100;
-	 			motor[RLift] = 100;
-	 			motor[LTrans] = -100;
-	 			motor[RTrans] = -100;
+	 			motor[LLift] = 127;
+	 			motor[RLift] = 127;
+	 			motor[LTrans] = -127;
+	 			motor[RTrans] = -127;
 	 		}
-	 		if(vexRT[Btn5U] == 1)
+	 		else if(vexRT[Btn5U] == 1)
 	 		{
-	 			motor[LLift] = -100;
-	 			motor[RLift] = -100;
-	 			motor[LTrans] = 100;
-	 			motor[RTrans] = 100;
+	 			motor[LLift] = -127;
+	 			motor[RLift] = -127;
+	 			motor[LTrans] = 127;
+	 			motor[RTrans] = 127;
 	 		}
 	 		else
 	 		{
@@ -104,7 +106,7 @@ task main()
 	 		if(vexRT[Btn8U] == 1)
 	 		{
 	 			trans = true;
-	 			SensorValue[Shift] = 0;
+	 			SensorValue[Shift] = 1;
 	 			wait10Msec(50);
 	 		}
 	 		/*
