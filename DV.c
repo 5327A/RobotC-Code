@@ -35,6 +35,16 @@
 void clear(){
 	nMotorEncoder[BLBase] = 0;
 	nMotorEncoder[BRBase] = 0;
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
+	motor[RLift] = 0;
+	motor[LLift] = 0;
+	motor[LTrans] = 0;
+ 	motor[RTrans] = 0;
+ 	motor[LIntake] = 0;
+	motor[RIntake] = 0;
 }
 
 void right(int speed){
@@ -48,39 +58,59 @@ void left(int speed){
 }
 
 void forward(int distance, int speed){
-	while(nMotorEncoder[BLBase] < distance && -nMotorEncoder[BRBase] < distance){
+	while(nMotorEncoder[BLBase] < distance && nMotorEncoder[BRBase] > -distance){
 		right(speed);
 		left(speed);
 	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 void backward(int distance, int speed){
-	while(nMotorEncoder[BLBase] < -distance && -nMotorEncoder[BRBase] < -distance){
+	while(nMotorEncoder[BLBase] > -distance && nMotorEncoder[BRBase] < distance){
 			right(-speed);
 			left(-speed);
 		}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 //For turns, adjust speed argument individually to allow distance travel
 void turnRight(int distance, int speed){
-	while(nMotorEncoder[BLBase] > distance && -nMotorEncoder[BRBase] < -distance){
-		right(speed);
-		left(-speed);
+	while(nMotorEncoder[BLBase] < distance && nMotorEncoder[BRBase] < distance){
+		right(-speed);
+		left(speed);
 	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 void turnLeft(int distance, int speed){
-	while(nMotorEncoder[BLBase] < -distance && -nMotorEncoder[BRBase] > distance){
-		left(speed);
-		right(-speed);
+	while(nMotorEncoder[BLBase] > -distance && nMotorEncoder[BRBase] > -distance){
+		left(-speed);
+		right(speed);
 	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 void swingRight(int distance, int speed){
-	while(nMotorEncoder[BLBase] > distance){
+	while(nMotorEncoder[BLBase] < distance){
 		right(speed/2);
 		left(speed);
 	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 
@@ -89,16 +119,25 @@ void swingLeft(int distance, int speed, ){
 		left(speed/2);
 		right(speed);
 	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
 }
 
 //Ray and Navu suggest only measuring angles for necessary heights
 void lift(int height, int speed){
-while(height < nMotorEncoder[LLift]){
+	while(height > nMotorEncoder[LLift])
+	{
 		motor[RLift] = speed;
 		motor[LLift] = speed;
 		motor[LTrans] = speed;
 	 	motor[RTrans] = speed;
 	}
+	motor[RLift] = 0;
+	motor[LLift] = 0;
+	motor[LTrans] = 0;
+ 	motor[RTrans] = 0;
 }
 
 void down(int time, int speed){
@@ -107,12 +146,18 @@ void down(int time, int speed){
 	motor[LTrans] = -speed;
 	motor[RTrans] = -speed;
 	wait10Msec(time);
+	motor[RLift] = 0;
+	motor[LLift] = 0;
+	motor[LTrans] = 0;
+ 	motor[RTrans] = 0;
 }
 
 void intake(int time, int speed){
 	motor[LIntake] = speed;
 	motor[RIntake] = speed;
 	wait10Msec(time);
+	motor[LIntake] = 0;
+	motor[RIntake] = 0;
 }
 
 void transmission(){
@@ -143,19 +188,34 @@ void pre_auton()
 
 task autonomous()
 {
+	clear();
 	nMotorEncoder[LLift] = 0;
 	lift(200, 127);
-	intake(30, -127);
-	down(30, 60);
+	intake(90, -127);
+	down(10, 60);
+	forward(220, 50);
   clear();
-  forward(320, 127);
-  intake(30, 127);
+  intake(160, 127);
+  lift(1360, 127);
+  Sleep(50);
+    turnRight(50 ,100);
+  forward(600, 50);
   clear();
-  backward(320, 127);
+  intake(300, -127);
+	/*
+  forward(220, 100);
+  clear();
+  intake(120, 127);
+  clear();
+  //turnRight(720, 127);
+  backward(220, 127);
+  Sleep(50);
   clear();
   turnRight(320, 127);
+  Sleep(50);
   clear();
   forward(320, 127);
+  clear();
   /*
   clear();
   intake();
@@ -249,20 +309,36 @@ task usercontrol()
 	 		motor[BRBase] = vexRT[Ch2];
 	 		if(vexRT[Btn5U] == 1)
 	 		{
-	 			if(nMotorEncoder[LLift] < 600)
-	 			{
-	 				motor[LLift] = 127;
-	 				motor[RLift] = 127;
-	 				motor[LTrans] = 127;
-	 				motor[RTrans] = 127;
-	 			}
-	 			else if(nMotorEncoder[LLift] > 600)
-	 			{
-	 				motor[LLift] = 127 - nMotorEncoder[LLift]/10;
-	 				motor[RLift] = 127 - nMotorEncoder[LLift]/10;
-	 				motor[LTrans] = 127 - nMotorEncoder[LLift]/10;
-	 				motor[RTrans] = 127 - nMotorEncoder[LLift]/10;
-	 			}
+	 			if(vexRT[Btn7U] == 0)
+	 				if(nMotorEncoder[LLift] < 1000)
+	 				{
+	 					motor[LLift] = 127;
+	 					motor[RLift] = 127;
+	 					motor[LTrans] = 127;
+	 					motor[RTrans] = 127;
+	 				}
+	 				else if(nMotorEncoder[LLift] > 1000)
+	 				{
+	 					motor[LLift] = 100;
+	 					motor[RLift] = 100;
+	 					motor[LTrans] = 100;
+	 					motor[RTrans] = 100;
+	 				}
+	 			if(vexRT[Btn7U] == 1)
+	 				if(nMotorEncoder[LLift] < 1000)
+	 				{
+	 					motor[LLift] = 127/2;
+	 					motor[RLift] = 127/2;
+	 					motor[LTrans] = 127/2;
+	 					motor[RTrans] = 127/2;
+	 				}
+	 				else if(nMotorEncoder[LLift] > 1000)
+	 				{
+	 					motor[LLift] = 50;
+	 					motor[RLift] = 50;
+	 					motor[LTrans] = 50;
+	 					motor[RTrans] = 50;
+	 				}
 
 	 		}
 	 		else if(vexRT[Btn5D] == 1)
@@ -341,6 +417,7 @@ task usercontrol()
 		if(vexRT[Btn7L] == 1)
 		{
 			startTask(autonomous);
+			stopTask(usercontrol);
 		}
 
 	}
