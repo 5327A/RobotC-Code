@@ -195,11 +195,16 @@ task autonomous()
 	down(10, 60);
 	forward(220, 50);
   clear();
-  intake(160, 127);
-  lift(1360, 127);
-  Sleep(50);
-    turnRight(50 ,100);
-  forward(600, 50);
+  intake(170, 127);
+  turnLeft(30, 70);
+  forward(450, 80);
+  clear();
+  lift(1380, 127);
+  Sleep(100);
+  clear();
+  turnRight(250 ,70);
+  clear();
+  forward(100, 50);
   clear();
   intake(300, -127);
 	/*
