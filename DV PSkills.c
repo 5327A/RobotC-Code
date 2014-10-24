@@ -194,37 +194,29 @@ task autonomous()
 	intake(100, -127);
 	down(10, 60);
 	clear();
-
-	//Move Towards Cube and Intake Cube
-	forward(220, 50);
+  forward(220, 100);
   clear();
-  intake(150, 127);
-
-  //Setup Approach Angle for Outtaking Cube
-  turnLeft(50, 70);
-  Sleep(50);
+  intake(120, 127);
+  clear();
+  turnRight(720, 127);
+  clear();
+  forward(320, 127);
+  clear();
+  lift(500, 127);
+  Sleep(300);
+  outtake(300, -127);
+  Sleep(300);
   forward(550, 80);
-  clear();
-  Sleep(50);
+  intake();
+  forward();
+  intake();
+  lift();
+  turn();
+  outtake();
+  /*
 
-  //Lift and Intake so that Cubes are in Tray and in a Position Ready to Outtake
-  lift(1380, 70);
-  intake(20, 127);
-  Sleep(80);
-  clear();
+  */
 
-  //Set up Outtaking Angle and Position
-  turnRight(290 ,70);
-  clear();
-  Sleep(100);
-  forward(110, 50);
-  clear();
-  swingRight(50, 50);
-  clear();
-  backward(50, 50);
-
-  //Outtake Cubes
-  intake(400, -127);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -329,5 +321,11 @@ task usercontrol()
 			motor[LIntake] = 0;
 			motor[RIntake] = 0;
 		}
+		if(vexRT[Btn7L] == 1)
+		{
+			startTask(autonomous);
+			stopTask(usercontrol);
+		}
+
 	}
 }
