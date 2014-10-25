@@ -190,41 +190,43 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
+	lift(350, 127);
+	down(70, 70);
 	lift(150, 127);
 	intake(100, -127);
-	down(10, 60);
+	//down(10, 60);
 	clear();
 
 	//Move Towards Cube and Intake Cube
 	forward(220, 50);
   clear();
-  intake(150, 127);
+  intake(120, 127);
 
   //Setup Approach Angle for Outtaking Cube
   turnLeft(50, 70);
   Sleep(50);
-  forward(550, 80);
+  forward(500, 70);
   clear();
   Sleep(50);
 
   //Lift and Intake so that Cubes are in Tray and in a Position Ready to Outtake
-  lift(1380, 70);
-  intake(20, 127);
-  Sleep(80);
+  lift(1380, 80);
+  intake(40, 127);
+  Sleep(60);
   clear();
 
   //Set up Outtaking Angle and Position
-  turnRight(290 ,70);
+  turnRight(340 ,60);
   clear();
   Sleep(100);
-  forward(110, 50);
+  forward(120, 50);
   clear();
   swingRight(50, 50);
   clear();
   backward(50, 50);
 
   //Outtake Cubes
-  intake(400, -127);
+  intake(350, -127);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -328,6 +330,11 @@ task usercontrol()
 		{
 			motor[LIntake] = 0;
 			motor[RIntake] = 0;
+		}
+		if(vexRT[Btn7L] == 1)
+		{
+			startTask(autonomous);
+			stopTask(usercontrol);
 		}
 	}
 }
