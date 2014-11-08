@@ -8,10 +8,11 @@ int right = 4;
 int back = 5;
 int reset = 7;
 int autonSelect = 0;
-string mainScreen[3] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->"};
+string mainScreen[4] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->", "<-  Controls  ->"};
 string autonScreen[8] = {"<-  RL1Auton  ->","<-  RL2Auton  ->", "<-  RR1Auton  ->", "<-  RR2Auton  ->", "<-  BL1Auton  ->", "<-  BL2Auton  ->", "<-  BR1Auton  ->", "<-  BR2Auton  ->"};
 string statScreen[3] = {"<-  Base IME  ->", "<-  Lift IME  ->", "<- Intake IME ->"};
 float statValues[4] = { "base1", "base2", "lift", "intake" };
+string controlScreen[10] = {"<-  Forward   ->", "<-  Backward  ->", "<-  TurnLeft  ->", "<- TurnRight  ->", "<- SwingLeft  ->", "<- SwingRight ->", "<-    Lift    ->", "<-    Down    ->", "<-  Intake  ->", "<-  Outtake   ->"};
 string primaryBattery;
 string backupBattery;
 string BLME;
@@ -37,7 +38,6 @@ task main()
 	int x = 0;
 	int y = 0;
 	int z = 0;
-	int n = 0;
 	while(true){
 		clearAllLCD();
 		if(y == 0){
@@ -58,9 +58,9 @@ task main()
 				}
 
 				if(x < 0){
-					x = 2;
+					x = 3;
 				}
-				else if(x > 2){
+				else if(x > 3){
 					x = 0;
 				}
 				wait1Msec(125);
@@ -148,6 +148,36 @@ task main()
 				wait1Msec(125);
 			}
 		}
+		else if(y == 1 && x == 3 ){
+			z = 0;
+			while(y == 1){
+				displayScreen(controlScreen[z]);
+				upperLim = 9;
+				if(nLCDButtons == left){
+					z--;
+				}
+				else if(nLCDButtons == right){
+					z++;
+				}
+				else if(nLCDButtons == select){
+					y++;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+				else if(nLCDButtons == reset){
+					y = 0;
+				}
+
+				if(z < 0){
+					z = upperLim;
+				}
+				else if(z > upperLim){
+					z = 0;
+				}
+				wait1Msec(125);
+			}
+		}
 		else if(y == 2 && x == 1 && z == 0){
 			z = 0;
 			while(y == 2){
@@ -199,6 +229,7 @@ task main()
 				wait1Msec(125);
 			}
 		}
+		//Motor Control Commands
 		if(nLCDButtons == reset){
 			y = 0;
 		}
