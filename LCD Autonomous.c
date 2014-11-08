@@ -5,7 +5,7 @@
 void clearAllLCD(){
 	clearLCDLine(0);
 	clearLCDLine(1);
-	wait10Msec(25);
+	wait10Msec(10);
 }
 
 void displayLCDStringSelect(int nLine, int nPos, string sString){
@@ -20,6 +20,7 @@ void autonConfirm(int nLine, int nPos, string auton){
 
 task main()
 {
+	bLCDBacklight = 1;
 	//Created these variables because the displayLCDStringSelect function only takes unsigned strings
 	string red = "Red";
 	string blue = "Blue";

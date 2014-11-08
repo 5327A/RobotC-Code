@@ -1,6 +1,6 @@
-task autonomous()						//All values must be adjusted due to the robot's change in weight and potentiometer values
+task main()						//All values must be adjusted due to the robot's change in weight and potentiometer values
 {
-	bLCDBacklight = false;		//Turns off LCD backlight
+	bLCDBacklight = 1;		//Turns off LCD backlight
 
 	clearLCDLine(0);
 	clearLCDLine(1);
