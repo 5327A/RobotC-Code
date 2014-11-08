@@ -5,13 +5,19 @@
 int left = 1;
 int select = 2;
 int right = 4;
+int back = 5;
 int reset = 7;
+int autonSelect = 0;
 string mainScreen[3] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->"};
 string autonScreen[8] = {"<-  RL1Auton  ->","<-  RL2Auton  ->", "<-  RR1Auton  ->", "<-  RR2Auton  ->", "<-  BL1Auton  ->", "<-  BL2Auton  ->", "<-  BR1Auton  ->", "<-  BR2Auton  ->"};
 string statScreen[3] = {"<-  Base IME  ->", "<-  Lift IME  ->", "<- Intake IME ->"};
-string statValues[4] = { "base1", "base2", "lift", "intake" };
-string batteryVoltage[2] = { "Primary", "Backup" };
-
+float statValues[4] = { "base1", "base2", "lift", "intake" };
+string primaryBattery;
+string backupBattery;
+string BLME;
+string BRME;
+string LLME;
+string RIME;
 
 void clearAllLCD(){
 	clearLCDLine(0);
@@ -28,10 +34,10 @@ task main()
 {
 	bLCDBacklight = 1;
 	int upperLim = 0;
-	int lowerLim = 0;
 	int x = 0;
 	int y = 0;
 	int z = 0;
+	int n = 0;
 	while(true){
 		clearAllLCD();
 		if(y == 0){
@@ -72,10 +78,16 @@ task main()
 					z++;
 				}
 				else if(nLCDButtons == select){
+					autonSelect = z;
 					y++;
+					displayLCDCenteredString(0, "Autonomous");
+					displayLCDCenteredString(1, "Selected");
+				}
+				else if(nLCDButtons == back){
+					y--;
 				}
 				else if(nLCDButtons == reset){
-					y--;
+					y = 0;
 				}
 
 				if(z < 0){
@@ -101,8 +113,11 @@ task main()
 				else if(nLCDButtons == select){
 					y++;
 				}
-				else if(nLCDButtons == reset){
+				else if(nLCDButtons == back){
 					y--;
+				}
+				else if(nLCDButtons == reset){
+					y = 0;
 				}
 
 				if(z < 0){
@@ -117,14 +132,75 @@ task main()
 		else if(y == 1 && x == 2){
 			z = 0;
 			while(y == 1){
-				displayLCDString(0,0, "Battery thing");
-				displayLCDString(1,0, "Battery thing2");
+				displayLCDString(0,0, "Primary:");
+				displayLCDString(1,0, "Backup:");
+				sprintf(primaryBattery, "%1.4f%c", nImmediateBatteryLevel/1000.0000,'V');
+				sprintf(backupBattery, "%1.4f%c", BackupBatteryLevel/1000.0000,'V');
+				displayLCDString(0,9, primaryBattery);
+				displayLCDString(1,9, backupBattery);
 				upperLim = 0;
 				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
 					y--;
 				}
 				wait1Msec(125);
 			}
+		}
+		else if(y == 2 && x == 1 && z == 0){
+			z = 0;
+			while(y == 2){
+				displayLCDString(0,0, "BLBase:");
+				displayLCDString(1,0, "BRBase:");
+				sprintf(BLME, "%.2f%c", nMotorEncoder[BLBase]);
+				sprintf(BRME, "%.2f%c", nMotorEncoder[BRBase]);
+				displayLCDString(0,10, BLME);
+				displayLCDString(1,10, BRME);
+				upperLim = 0;
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+				wait1Msec(125);
+			}
+		}
+		else if(y == 2 && x == 1 && z == 1){
+			z = 0;
+			while(y == 2){
+				displayLCDString(0,0, "LLift:");
+				sprintf(LLME, "%.2f%c", nMotorEncoder[LLift]);
+				displayLCDString(0,10, LLME);
+				upperLim = 0;
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+				wait1Msec(125);
+			}
+		}
+		else if(y == 2 && x == 1 && z == 2){
+			z = 0;
+			while(y == 2){
+				displayLCDString(0,0, "RIntake:");
+				sprintf(RIME, "%.2f%c", nMotorEncoder[RIntake]);
+				displayLCDString(0,10, RIME);
+				upperLim = 0;
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+				wait1Msec(125);
+			}
+		}
+		if(nLCDButtons == reset){
+			y = 0;
 		}
 		wait1Msec(125);
 	}
