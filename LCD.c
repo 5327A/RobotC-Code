@@ -7,9 +7,10 @@ int select = 2;
 int right = 4;
 int reset = 7;
 string mainScreen[3] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->"};
-string autonScreen[8] = {/*each auton*/};
-string statScreen[3] = { /*base*/, /*lift*/, /*intake*/ };
-string batteryLife[2] = { /*Primary*/, /*Backup*/ };
+string autonScreen[8] = {"<-  RL1Auton  ->","<-  RL2Auton  ->", "<-  RR1Auton  ->", "<-  RR2Auton  ->", "<-  BL1Auton  ->", "<-  BL2Auton  ->", "<-  BR1Auton  ->", "<-  BR2Auton  ->"};
+string statScreen[3] = {"<-  Base IME  ->", "<-  Lift IME  ->", "<- Intake IME ->"};
+string statValues[4] = { "base1", "base2", "lift", "intake" };
+string batteryVoltage[2] = { "Primary", "Backup" };
 
 
 void clearAllLCD(){
@@ -22,41 +23,108 @@ void displayScreen(const string display){
 	displayLCDCenteredString(1,"<Select>");
 }
 
+
 task main()
 {
 	bLCDBacklight = 1;
+	int upperLim = 0;
+	int lowerLim = 0;
 	int x = 0;
 	int y = 0;
 	int z = 0;
 	while(true){
 		clearAllLCD();
 		if(y == 0){
-			displayScreen(mainScreen[x]);
-		}
-		else if(y == 1){
-			//second screen
-		}
+			x = 0;
+			while(y == 0){
+				displayScreen(mainScreen[x]);
+				if(nLCDButtons == left){
+					x--;
+				}
+				else if(nLCDButtons == right){
+					x++;
+				}
+				else if(nLCDButtons == select){
+					y++;
+				}
+				else if(nLCDButtons == reset){
+					y = 0;
+				}
 
-		if(nLCDButtons == left){
-			x--;
+				if(x < 0){
+					x = 2;
+				}
+				else if(x > 2){
+					x = 0;
+				}
+				wait1Msec(125);
+			}
 		}
-		else if(nLCDButtons == right){
-			x++;
-		}
-		else if(nLCDButtons == select){
-			y = 1;
-			x = 0;
-		}
-		else if(nLCDButtons == reset){
-			y = 0;
-			x = 0;
-		}
+		else if(y == 1 && x == 0){
+			z = 0;
+			while(y == 1){
+				displayScreen(autonScreen[z]);
+				upperLim = 7;
+				if(nLCDButtons == left){
+					z--;
+				}
+				else if(nLCDButtons == right){
+					z++;
+				}
+				else if(nLCDButtons == select){
+					y++;
+				}
+				else if(nLCDButtons == reset){
+					y--;
+				}
 
-		if(x == -1){
-			x = 2;
+				if(z < 0){
+					z = upperLim;
+				}
+				else if(z > upperLim){
+					z = 0;
+				}
+				wait1Msec(125);
+			}
 		}
-		else if(x == 3){
-			x = 0;
+		else if(y == 1 && x == 1){
+			z = 0;
+			while(y == 1){
+				displayScreen(statScreen[z];
+				upperLim = 2;
+				if(nLCDButtons == left){
+					z--;
+				}
+				else if(nLCDButtons == right){
+					z++;
+				}
+				else if(nLCDButtons == select){
+					y++;
+				}
+				else if(nLCDButtons == reset){
+					y--;
+				}
+
+				if(z < 0){
+					z = upperLim;
+				}
+				else if(z > upperLim){
+					z = 0;
+				}
+				wait1Msec(125);
+			}
+		}
+		else if(y == 1 && x == 2){
+			z = 0;
+			while(y == 1){
+				displayLCDString(0,0, "Battery thing");
+				displayLCDString(1,0, "Battery thing2");
+				upperLim = 0;
+				if(nLCDButtons == reset){
+					y--;
+				}
+				wait1Msec(125);
+			}
 		}
 		wait1Msec(125);
 	}
