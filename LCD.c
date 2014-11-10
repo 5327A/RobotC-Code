@@ -229,7 +229,196 @@ task main()
 				wait1Msec(125);
 			}
 		}
-		//Motor Control Commands
+		else if(y == 2 && x == 3 && z == 0){
+			z = 0;
+			forward(100,127);
+			while(motor[BLBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BLBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 1){
+			z = 0;
+			backward(100,127);
+			while(motor[BLBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BLBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 2){
+			z = 0;
+			turnLeft(100,127);
+			while(motor[BLBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BLBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 3){
+			z = 0;
+			turnRight(100,127);
+			while(motor[BLBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BLBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 4){
+			z = 0;
+			swingLeft(100,127);
+			while(motor[BRBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BRBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 5){
+			z = 0;
+			swingRight(100,127);
+			while(motor[BLBase] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[BLBase] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 6){
+			z = 0;
+			lift(700,127);
+			while(motor[LLift] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[LLift] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 7){
+			z = 0;
+			down(700,127);
+			while(motor[LLift] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[LLift] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 8){
+			z = 0;
+			intake(500,127);
+			while(motor[RIntake] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[RIntake] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
+		else if(y == 2 && x == 3 && z == 9){
+			z = 0;
+			intake(500, -127);
+			while(motor[RIntake] != 0){
+				displayLCDCenteredString(0,"Executing...");
+			}
+			if(motor[RIntake] == 0){
+				clearAllLCD();
+				displayLCDCenteredString(0, "Done");
+			}
+			while(y == 2){
+				if(nLCDButtons == reset){
+					y = 0;
+				}
+				else if(nLCDButtons == back){
+					y--;
+				}
+			}
+		}
 		if(nLCDButtons == reset){
 			y = 0;
 		}
