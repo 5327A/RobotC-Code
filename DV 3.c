@@ -190,11 +190,12 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
-	lift(150, 127);
-  backward(400, 127);
-  lift(150, 127);
+	backward(60, 127)
+	lift(700, 127);
+	intake(300, -127);
+
   //Outtake Cubes
-  intake(200, -127);
+  //intake(200, -127);
 	/*
   forward(220, 100);
   clear();

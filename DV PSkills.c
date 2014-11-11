@@ -190,32 +190,22 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
-	lift(150, 127);
-	intake(100, -127);
-	down(10, 60);
+	backward(60, 127);
 	clear();
-  forward(220, 100);
+	lift(700, 127);
+	intake(300, -127);
+	Sleep(5000);
+	intake(30 ,-127);
+	lift(150, 127);
+	forward(120, 50);
   clear();
   intake(120, 127);
-  clear();
-  turnRight(720, 127);
-  clear();
-  forward(320, 127);
-  clear();
-  lift(500, 127);
-  Sleep(300);
-  outtake(300, -127);
-  Sleep(300);
-  forward(550, 80);
-  intake();
-  forward();
-  intake();
-  lift();
-  turn();
-  outtake();
-  /*
-
-  */
+	backward(170, 50);
+	clear();
+	lift(700, 127);
+	Sleep(5000)
+	intake(100, -127);
+  8
 
 }
 
