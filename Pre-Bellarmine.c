@@ -714,11 +714,12 @@ task autonomous()
 task usercontrol()
 {
 	int lift = 2;											//Highest height avalible from start
-	int cube = 74;										//Autotap
+	int cube = 120;										//Autotap
 	int small = 700;									//Small goal
 	int medium = 1480;								//Medium Goal
 	int large = 1230;									//High Goal
-	int intakerise = 450;							//Skyrise Intake
+	int intakerise = 280;							//Skyrise Intake
+	bool autotap = 1;
 	SensorValue[Shift] = 0;						//Pnuematic Default Position
 	while(true)
 	{
@@ -816,6 +817,7 @@ task usercontrol()
 	 		if(vexRT[Btn8U] == 1)					//Shift to 4 Motor Base
 	 		{
 	 			SensorValue[Shift] = 0;
+	 			bLCDBacklight = 1;
 	 			wait10Msec(50);
 	 		}
 
@@ -924,10 +926,16 @@ task usercontrol()
 	 		}
 	 		else if(nMotorEncoder[LLift] < cube) 	//Autotap
 	 		{
-	 			motor[LLift] = 60;
-	 			motor[RLift] = 60;
-	 			motor[LTrans] = 60;
-	 			motor[RTrans] = 60;
+	 			if(autotap == 1)
+	 			{
+	 				motor[LLift] = 40;
+	 				motor[RLift] = 40;
+	 				motor[LTrans] = 40;
+	 				motor[RTrans] = 40;
+	 			}
+	 			else
+	 			{
+	 			}
 	 		}
 	 		else
 	 		{
@@ -939,6 +947,7 @@ task usercontrol()
 	 		if(vexRT[Btn8U] == 1)						//Shift to 6 Motor Drive
 	 		{
 	 			SensorValue[Shift] = 1;
+	 			bLCDBacklight = 0;
 	 			wait10Msec(50);
 	 		}
 		}
@@ -998,6 +1007,13 @@ task usercontrol()
 		if(vexRT[Btn8RXmtr2] == 1)
 		{
 			lift = 3;
+		}
+		if(vexRT[Btn7UXmtr2] == 1)
+		{
+			if(autotap == true)
+				autotap = false;
+			else if(autotap == false)
+				autotap = true;
 		}
 		/*
 		if(vexRT[Btn5DXmtr2] == 1)		//Reset
