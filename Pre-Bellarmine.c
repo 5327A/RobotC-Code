@@ -38,34 +38,92 @@
 
 //int total = 3588;
 //int cl = -4507 + 3588 + 3588;
-int leftbtn = 1;
-int selectbtn = 2;
-int rightbtn = 4;
-int backbtn = 5;
-int resetbtn = 7;
-int autonSelect = 0;
-string mainScreen[4] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->", "<-  Controls  ->"};
-string autonScreen[8] = {"<-  RL1Auton  ->","<-  RL2Auton  ->", "<-  RR1Auton  ->", "<-  RR2Auton  ->", "<-  BL1Auton  ->", "<-  BL2Auton  ->", "<-  BR1Auton  ->", "<-  BR2Auton  ->"};
-string statScreen[3] = {"<-  Base IME  ->", "<-  Lift IME  ->", "<- Intake IME ->"};
-string controlScreen[10] = {"<-  Forward   ->", "<-  Backward  ->", "<-  TurnLeft  ->", "<- TurnRight  ->", "<- SwingLeft  ->", "<- SwingRight ->", "<-    Lift    ->", "<-    Down    ->", "<-   Intake   ->", "<-  Outtake   ->"};
-string primaryBattery;
-string backupBattery;
-string BLME;
-string BRME;
-string LLME;
-string RIME;
+#define DRIVE_MAX       127			//Max/Min Speeds(PID)
+#define DRIVE_MIN     (-127)
 
-void clearAllLCD(){
+float  pid_Kp = 1.0; 	//P Control Var
+int leftbtn = 1;			//LCD Left Button
+int selectbtn = 2;		//LCD Select Button
+int rightbtn = 4;			//LCD Right Button
+int backbtn = 5;			//LCD Back Button
+int resetbtn = 7;			//LCD Reset Button
+int autonSelect = 0;	//LCD Autonomous Selecting Variable
+//Main Screen Options Array
+string mainScreen[4] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->", "<-  Controls  ->"};
+//Autonomous Select Screen Options Array
+string autonScreen[8] = {"<-  RL1Auton  ->","<-  RL2Auton  ->", "<-  RR1Auton  ->", "<-  RR2Auton  ->", "<-  BL1Auton  ->", "<-  BL2Auton  ->", "<-  BR1Auton  ->", "<-  BR2Auton  ->"};
+//Statistics/Sensor Values Screen Options Array
+string statScreen[3] = {"<-  Base IME  ->", "<-  Lift IME  ->", "<- Intake IME ->"};
+//Control Screen Options Array
+string controlScreen[10] = {"<-  Forward   ->", "<-  Backward  ->", "<-  TurnLeft  ->", "<- TurnRight  ->", "<- SwingLeft  ->", "<- SwingRight ->", "<-    Lift    ->", "<-    Down    ->", "<-   Intake   ->", "<-  Outtake   ->"};
+string primaryBattery;	//LCD Primary Battery String Parse Destination
+string backupBattery;		//LCD Backup Battery String Parse Destination
+string BLME;						//LCD Back Left Base IME String Parse Destination
+string BRME;						//LCD Back Right Base IME String Parse Destination
+string LLME;						//LCD Left Lift IME String Parse Destination
+string RIME;						//LCD Right Intake IME String Parse Destination
+
+float pidL(int WantedVal)
+{
+    float Error;
+    float Speed;
+
+    Error      = 0;
+    Speed 		 = 0;
+
+    // calculate error
+    Error = WantedVal - abs(nMotorEncoder[BLBase]);
+
+    // integral - if Ki is not 0
+    // If we are inside controlable window then integrate the error
+    // calculate drive
+    Speed = (pid_Kp * Error);
+
+    // limit drive
+    if( Speed > DRIVE_MAX )
+        Speed = DRIVE_MAX;
+    if( Speed < DRIVE_MIN )
+        Speed = DRIVE_MIN;
+
+ 		return Speed; //Send to motor
+}
+
+float pidR(int WantedVal)
+{
+    float Error;
+    float Speed;
+
+    Error      = 0;
+    Speed 		 = 0;
+
+    // calculate error
+    Error = WantedVal - abs(nMotorEncoder[BRBase]);
+
+    // integral - if Ki is not 0
+    // If we are inside controlable window then integrate the error
+    // calculate drive
+    Speed = (pid_Kp * Error);
+
+    // limit drive
+    if( Speed > DRIVE_MAX )
+        Speed = DRIVE_MAX;
+    if( Speed < DRIVE_MIN )
+        Speed = DRIVE_MIN;
+
+ 		return Speed; //Send to motor
+}
+
+void clearAllLCD(){ 					//Clears LCD Screen
 	clearLCDLine(0);
 	clearLCDLine(1);
 }
 
-void displayScreen(const string display){
+void displayScreen(const string display){	//Standard Display screen format for LCD
 	displayLCDString(0,0, display);
 	displayLCDCenteredString(1,"<Select>");
 }
 
-void clearAllMotorEn(){
+void clearAllMotorEn(){				//Resets all Motor encoder values to 0
 	nMotorEncoder[BLBase] = 0;
 	nMotorEncoder[BRBase] = 0;
 	nMotorEncoder[LLift] = 0;
@@ -75,6 +133,7 @@ void clearAllMotorEn(){
 void clear(){									//Clears all values and resets them to 0(Motors and Encoders)
 	nMotorEncoder[BLBase] = 0;
 	nMotorEncoder[BRBase] = 0;
+	nMotorEncoder[RIntake] = 0;
 	motor[FRBase] = 0;
 	motor[BRBase] = 0;
 	motor[FLBase] = 0;
@@ -87,7 +146,61 @@ void clear(){									//Clears all values and resets them to 0(Motors and Encode
 	motor[RIntake] = 0;
 }
 
-void right(int speed){				//Power right side base motors
+void Pright(int speed, int distance){				//Power right side base motors
+	motor[FRBase] = pidR(distance) * speed;
+	motor[BRBase] = pidR(distance) * speed;
+}
+
+void Pleft(int speed, int distance){					//Power left side base motors
+	motor[FLBase] = pidL(distance) * speed;
+	motor[BLBase] = pidL(distance) * speed;
+}
+
+void Pforward(int distance, int speed){		//Move Forward
+	while(nMotorEncoder[BLBase] < distance && nMotorEncoder[BRBase] > -distance){
+		Pright(1, distance);
+		Pleft(1, distance);
+	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
+}
+
+void Pbackward(int distance, int speed){		//Move Backwards
+	while(nMotorEncoder[BLBase] > -distance && nMotorEncoder[BRBase] < distance){
+			Pright(-1, distance);
+			Pleft(-1, distance);
+		}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
+}
+
+void PturnRight(int distance, int speed){	//Turn Right
+	while(nMotorEncoder[BLBase] < distance && nMotorEncoder[BRBase] < distance){
+		Pright(-1, distance);
+		Pleft(1, distance);
+	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
+}
+
+void PturnLeft(int distance, int speed){		//Turn Left
+	while(nMotorEncoder[BLBase] > -distance && nMotorEncoder[BRBase] > -distance){
+		Pleft(-1, distance);
+		Pright(1, distance);
+	}
+	motor[FRBase] = 0;
+	motor[BRBase] = 0;
+	motor[FLBase] = 0;
+	motor[BLBase] = 0;
+}
+
+void right(int speed	){				//Power right side base motors
 	motor[FRBase] = speed;
 	motor[BRBase] = speed;
 }
@@ -141,6 +254,7 @@ void turnLeft(int distance, int speed){		//Turn Left
 	motor[BLBase] = 0;
 }
 
+
 void swingRight(int distance, int speed){	//Swing(One motor moves 1/2 speed of other) Right
 	while(nMotorEncoder[BLBase] < distance){
 		right(speed/2);
@@ -190,10 +304,20 @@ void down(int time, int speed){						//Retract lift downwards
  	motor[RTrans] = 0;
 }
 
-void intake(int time, int speed){					//Intake/Outtake
+void outtake(int rotation, int speed){					//Intake/Outtake
+	while(nMotorEncoder[RIntake] < rotation){
+	motor[LIntake] = -speed;
+	motor[RIntake] = -speed;
+	}
+	motor[LIntake] = 0;
+	motor[RIntake] = 0;
+}
+
+void intake(int rotation, int speed){					//Intake/Outtake
+	while(nMotorEncoder[RIntake] > -rotation){
 	motor[LIntake] = speed;
 	motor[RIntake] = speed;
-	wait10Msec(time);
+	}
 	motor[LIntake] = 0;
 	motor[RIntake] = 0;
 }
@@ -208,14 +332,14 @@ void transmission(){											//Change transmission mode
 task lcd()
 {
 //*!!Code automatically generated by 'ROBOTC' configuration wizard               !!*//
-	bLCDBacklight = true;
+	bLCDBacklight = true; //Turns on backlight
 	int upperLim = 0;
-	int x = 0;
-	int y = 0;
-	int z = 0;
+	int x = 0;						//LCD Main Screen Hierarchy
+	int y = 0;						//LCD Second Screen Hierarchy
+	int z = 0;						//LCD Third Screen Hierarchy
 	while(true){
 		clearAllLCD();
-		if(y == 0){
+		if(y == 0){					//LCD Main Screen
 			x = 0;
 			while(y == 0){
 				displayScreen(mainScreen[x]);
@@ -241,7 +365,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 1 && x == 0){
+		else if(y == 1 && x == 0){	//LCD Autonomous Screen
 			z = 0;
 			while(y == 1){
 				displayScreen(autonScreen[z]);
@@ -274,7 +398,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 1 && x == 1){
+		else if(y == 1 && x == 1){	//LCD Statistics/Sensor Value Screen
 			z = 0;
 			while(y == 1){
 				displayScreen(statScreen[z]);
@@ -304,7 +428,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 1 && x == 2){
+		else if(y == 1 && x == 2){	//LCD Battery Voltage Screen
 			z = 0;
 			while(y == 1){
 				displayLCDString(0,0, "Primary:");
@@ -323,7 +447,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 1 && x == 3 ){
+		else if(y == 1 && x == 3 ){	//LCD Control Screen
 			z = 0;
 			while(y == 1){
 				displayScreen(controlScreen[z]);
@@ -353,7 +477,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 2 && x == 1 && z == 0){
+		else if(y == 2 && x == 1 && z == 0){	//LCD Base IME Value Screen
 			z = 0;
 			while(y == 2){
 				if(nLCDButtons == selectbtn){
@@ -375,7 +499,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 2 && x == 1 && z == 1){
+		else if(y == 2 && x == 1 && z == 1){	//LCD Lift IME Screen
 			z = 0;
 			while(y == 2){
 				if(nLCDButtons == selectbtn){
@@ -394,7 +518,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 2 && x == 1 && z == 2){
+		else if(y == 2 && x == 1 && z == 2){	//LCD Intake IME Screen
 			z = 0;
 			while(y == 2){
 				if(nLCDButtons == selectbtn){
@@ -413,7 +537,7 @@ task lcd()
 				wait1Msec(125);
 			}
 		}
-		else if(y == 2 && x == 3 && z == 0){
+		else if(y == 2 && x == 3 && z == 0){	//LCD Forward Screen
 			z = 0;
 			forward(100,127);
 			if(motor[BLBase] == 0){
@@ -431,7 +555,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 1){
+		else if(y == 2 && x == 3 && z == 1){	//LCD Backward Screen
 			z = 0;
 			backward(100,127);
 			if(motor[BLBase] == 0){
@@ -449,7 +573,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 2){
+		else if(y == 2 && x == 3 && z == 2){	//LCD Turn Left Screen
 			z = 0;
 			turnLeft(100,127);
 			if(motor[BLBase] == 0){
@@ -467,7 +591,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 3){
+		else if(y == 2 && x == 3 && z == 3){	//LCD Turn Right Screen
 			z = 0;
 			turnRight(100,127);
 			if(motor[BLBase] == 0){
@@ -485,7 +609,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 4){
+		else if(y == 2 && x == 3 && z == 4){	//LCD Swing Left Screen
 			z = 0;
 			swingLeft(100,127);
 			if(motor[BRBase] == 0){
@@ -503,7 +627,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 5){
+		else if(y == 2 && x == 3 && z == 5){	//LCD Swing Right Screen
 			z = 0;
 			swingRight(100,127);
 			if(motor[BLBase] == 0){
@@ -521,7 +645,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 6){
+		else if(y == 2 && x == 3 && z == 6){	//LCD Lift Screen
 			z = 0;
 			lift(700,127);
 			if(motor[LLift] == 0){
@@ -539,7 +663,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 7){
+		else if(y == 2 && x == 3 && z == 7){	//LCD Down Screen
 			z = 0;
 			down(700,127);
 			if(motor[LLift] == 0){
@@ -557,7 +681,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 8){
+		else if(y == 2 && x == 3 && z == 8){	//LCD Intake Screen
 			z = 0;
 			intake(500,127);
 			if(motor[RIntake] == 0){
@@ -575,7 +699,7 @@ task lcd()
 				}
 			}
 		}
-		else if(y == 2 && x == 3 && z == 9){
+		else if(y == 2 && x == 3 && z == 9){	//LCD Outtake Screen
 			z = 0;
 			intake(500, -127);
 			if(motor[RIntake] == 0){
@@ -663,18 +787,24 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
-	lift(350, 127);
+	lift(100, 127);
 	down(70, 70);
-	lift(150, 127);
-	intake(100, -127);
+	lift(100, 127);
+	intake(100, 70);
 	//down(10, 60);
 	clear();
 
 	//Move Towards Cube and Intake Cube
-	forward(220, 50);
+	forward(270, 50);
   clear();
-  intake(120, 127);
-
+  intake(600, 127);
+  backward(10, 50);
+  clear();
+  turnLeft(720, 70);
+  clear();
+  forward(120, 50);
+	lift(700, 127);
+  /*
   //Setup Approach Angle for Outtaking Cube
   turnLeft(50, 70);
   Sleep(50);
@@ -694,11 +824,12 @@ task autonomous()
   Sleep(100);
   forward(120, 50);
   clear();
-  swingRight(50, 50);
+  //swingRight(50, 50);
   clear();
-
+	*/
   //Outtake Cubes
-  intake(350, -127);
+  outtake(1200, 127);
+  backward(500, 127);
 
 }
 
@@ -714,12 +845,12 @@ task autonomous()
 task usercontrol()
 {
 	int lift = 2;											//Highest height avalible from start
-	int cube = 120;										//Autotap
+	int cube = 100;										//Autotap
 	int small = 700;									//Small goal
 	int medium = 1480;								//Medium Goal
 	int large = 1230;									//High Goal
 	int intakerise = 280;							//Skyrise Intake
-	bool autotap = 1;
+	bool autotap = 0;
 	SensorValue[Shift] = 0;						//Pnuematic Default Position
 	while(true)
 	{
@@ -731,7 +862,7 @@ task usercontrol()
 	 		motor[RTrans] = vexRT[Ch2];
 	 		motor[FRBase] = vexRT[Ch2];
 	 		motor[BRBase] = vexRT[Ch2];
-	 		if(vexRT[Btn5U] == 1)					//Lift Up
+	 		if(vexRT[Btn5U] == 1)					//Lift Up, Max Height Depending on Lift Height Value
 	 		{
 	 			if(lift == 0)
 	 			{
@@ -803,6 +934,11 @@ task usercontrol()
 	 		{
 	 			motor[LLift] = -127;
 	 			motor[RLift] = -127;
+	 		}
+	 		else if(vexRT[Btn5DXmtr2] == 1)		//Retract Lift Down
+	 		{
+	 			motor[LLift] = -40;
+	 			motor[RLift] = -40;
 	 		}
 	 		else if(nMotorEncoder[LLift] < cube) 	//Autotap
 	 		{
@@ -924,6 +1060,13 @@ task usercontrol()
 	 			motor[LTrans] = -127;
 	 			motor[RTrans] = -127;
 	 		}
+	 		else if(vexRT[Btn5DXmtr2] == 1)		//Retract Lift Down
+	 		{
+	 			motor[LLift] = -40;
+	 			motor[RLift] = -40;
+	 			motor[LTrans] = -40;
+	 			motor[RTrans] = -40;
+	 		}
 	 		else if(nMotorEncoder[LLift] < cube) 	//Autotap
 	 		{
 	 			if(autotap == 1)
@@ -933,8 +1076,12 @@ task usercontrol()
 	 				motor[LTrans] = 40;
 	 				motor[RTrans] = 40;
 	 			}
-	 			else
+	 			else if(autotap == 0)
 	 			{
+	 				motor[LLift] = 0;
+	 				motor[RLift] = 0;
+	 				motor[LTrans] = 0;
+	 				motor[RTrans] = 0;
 	 			}
 	 		}
 	 		else
@@ -992,7 +1139,7 @@ task usercontrol()
 			motor[LIntake] = 0;
 			motor[RIntake] = 0;
 		}
-		if(vexRT[Btn8DXmtr2] == 1)
+		if(vexRT[Btn8DXmtr2] == 1)						//Lift Heights
 		{
 			lift = 0;
 		}
@@ -1008,7 +1155,7 @@ task usercontrol()
 		{
 			lift = 3;
 		}
-		if(vexRT[Btn7UXmtr2] == 1)
+		if(vexRT[Btn7UXmtr2] == 1)					//Turn Autotap On/Off
 		{
 			if(autotap == true)
 				autotap = false;
