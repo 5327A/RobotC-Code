@@ -6,7 +6,7 @@
 
 static char robotData[14992];
 
-void rerun()
+task main()
 {
     int i;
 
@@ -22,14 +22,13 @@ void rerun()
  	 	bLCDBacklight = 1;
 
     for(i=0;i<14992;i++){
-    		robotData[i] = i;
-        //robotData[i] = vexRT[Ch3];
-        //robotData[i+1] = vexRT[Ch2];
-        //robotData[i+2] = vexRT[Btn5U];
-        //robotData[i+3] = vexRT[Btn5D];
-        //robotData[i+4] = vexRT[Btn6U];
-        //robotData[i+5] = vexRT[Btn6D];
-        //wait1Msec(6);
+        robotData[i] = vexRT[Ch3];
+        robotData[i+1] = vexRT[Ch2];
+        robotData[i+2] = vexRT[Btn5U];
+        robotData[i+3] = vexRT[Btn5D];
+        robotData[i+4] = vexRT[Btn6U];
+        robotData[i+5] = vexRT[Btn6D];
+        wait1Msec(6);
     }
 
 		bLCDBacklight = 0;
@@ -38,12 +37,4 @@ void rerun()
         writeDebugStreamLine("File write error");
     }
 
-}
-
-task main(){
-	while(true){
-		if(vexRT[Btn7D] == 1){
-			rerun();
-		}
-	}
 }
