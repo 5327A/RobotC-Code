@@ -4,11 +4,12 @@
 
 #include <FlashLib.h>
 
-static char robotData[14992];
+static char robotData[14988];
 
 task main()
 {
     int i;
+    string x;
 
     bLCDBacklight = 0;
 
@@ -21,7 +22,7 @@ task main()
 
  	 	bLCDBacklight = 1;
 
-    for(i=0;i<14992;i++){
+    for(i=0;i<14988;i+= 6){
         robotData[i] = vexRT[Ch3];
         robotData[i+1] = vexRT[Ch2];
         robotData[i+2] = vexRT[Btn5U];
@@ -33,7 +34,7 @@ task main()
 
 		bLCDBacklight = 0;
 
-    if( RCFS_AddFile( robotData, 14992, "rerunData" ) == RCFS_ERROR ){
+    if( RCFS_AddFile( robotData, 14988, "rerunData" ) == RCFS_ERROR ){
         writeDebugStreamLine("File write error");
     }
 
