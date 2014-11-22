@@ -787,23 +787,38 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
-	lift(100, 127);
-	down(70, 70);
-	lift(100, 127);
-	intake(100, 70);
+	backward(100, 127);
+	clear();
+	clear();
+	//lift(370, 127);
+	lift(390, 127);
 	//down(10, 60);
+	clear();
+	outtake(790, 70);
 	clear();
 
 	//Move Towards Cube and Intake Cube
-	forward(270, 50);
+	forward(220, 50);
+	Sleep(500);
   clear();
-  intake(600, 127);
-  backward(10, 50);
+  lift(700, 127);
   clear();
-  turnLeft(735, 70);
+  backward(50, 50);
   clear();
-  forward(120, 50);
-	lift(700, 127);
+  turnLeft(300, 50);
+  clear();
+  forward(10, 30);
+  clear();
+  intake(10,40);
+  down(100,70);
+  clear();
+  backward(20 ,30);
+  clear();
+  lift(300, 70);
+  clear();
+  outtake(500, 127);
+  clear();
+  backward(100, 127);
   /*
   //Setup Approach Angle for Outtaking Cube
   turnLeft(50, 70);
@@ -828,8 +843,7 @@ task autonomous()
   clear();
 	*/
   //Outtake Cubes
-  outtake(1500, 127);
-  backward(500, 127);
+  //backward(500, 127);
 
 }
 

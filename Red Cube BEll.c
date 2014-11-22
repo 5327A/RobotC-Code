@@ -800,7 +800,7 @@ task autonomous()
   intake(600, 127);
   backward(10, 50);
   clear();
-  turnLeft(735, 70);
+  turnRight(735, 70);
   clear();
   forward(120, 50);
 	lift(700, 127);

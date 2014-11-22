@@ -222,7 +222,7 @@ void forward(int distance, int speed){		//Move Forward
 }
 
 void backward(int distance, int speed){		//Move Backwards
-	while(nMotorEncoder[BLBase] > -distance && nMotorEncoder[BRBase] < distance){
+	while(nMotorEncoder[BLBase] > (-1 * distance) && nMotorEncoder[BRBase] < distance){
 			right(-speed);
 			left(-speed);
 		}
@@ -787,47 +787,16 @@ task autonomous()
 	//Setup Phase
 	clear();
 	nMotorEncoder[LLift] = 0;
+	intake(100, 70);
 	lift(100, 127);
 	down(70, 70);
 	lift(100, 127);
-	intake(100, 70);
 	//down(10, 60);
+
 	clear();
-
-	//Move Towards Cube and Intake Cube
-	forward(270, 50);
-  clear();
-  intake(600, 127);
-  backward(10, 50);
-  clear();
-  turnLeft(735, 70);
-  clear();
-  forward(120, 50);
-	lift(700, 127);
-  /*
-  //Setup Approach Angle for Outtaking Cube
-  turnLeft(50, 70);
-  Sleep(50);
-  forward(500, 70);
-  clear();
-  Sleep(50);
-
-  //Lift and Intake so that Cubes are in Tray and in a Position Ready to Outtake
-  lift(1380, 80);
-  intake(40, 127);
-  Sleep(60);
-  clear();
-
-  //Set up Outtaking Angle and Position
-  turnRight(340 ,70);
-  clear();
-  Sleep(100);
-  forward(120, 50);
-  clear();
-  //swingRight(50, 50);
-  clear();
-	*/
-  //Outtake Cubes
+	nMotorEncoder[LLift] = 0;
+	backward(60, 127)
+	lift(750, 127);
   outtake(1500, 127);
   backward(500, 127);
 
