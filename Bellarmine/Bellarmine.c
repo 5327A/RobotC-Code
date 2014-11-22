@@ -385,7 +385,7 @@ task lcd()
 					}
 					else{
 						displayLCDCenteredString(0, "ERROR_AUTON_");
-						displayLCDCenteredString(1, "NOT_SELECTED"
+						displayLCDCenteredString(1, "NOT_SELECTED");
 					}
 				}
 				else if(nLCDButtons == backbtn){
