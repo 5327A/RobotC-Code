@@ -379,8 +379,14 @@ task lcd()
 				else if(nLCDButtons == selectbtn){
 					autonSelect = z;
 					y++;
-					displayLCDCenteredString(0, "Autonomous");
-					displayLCDCenteredString(1, "Selected");
+					if(autonSelect != NULL){
+						displayLCDCenteredString(0, "Autonomous");
+						displayLCDCenteredString(1, "Selected");
+					}
+					else{
+						displayLCDCenteredString(0, "ERROR_AUTON_");
+						displayLCDCenteredString(1, "NOT_SELECTED"
+					}
 				}
 				else if(nLCDButtons == backbtn){
 					y--;
