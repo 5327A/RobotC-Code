@@ -9,7 +9,6 @@ static char robotData[14988];
 task main()
 {
     int i;
-    string x;
 
     bLCDBacklight = 0;
 
@@ -34,7 +33,7 @@ task main()
 
 		bLCDBacklight = 0;
 
-    if( RCFS_AddFile( robotData, 14988, "rerunData" ) == RCFS_ERROR ){
+    if( RCFS_AddFile( robotData, 14988, "robotData" ) == RCFS_ERROR ){
         writeDebugStreamLine("File write error");
     }
 
