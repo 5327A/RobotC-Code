@@ -6,3 +6,5 @@ RobotC is a language/IDE aimed towards STEM education use that we use to program
 our VEX Robot. In this repo, we have various files stemming from test code to
 competition ready files. The latest competition use files are usually denoted by
 the name of the competition and possibly a date to indicate the final use date.
+
+This branch is the working branch for programs for the upcoming Modesto VEX Tournament
