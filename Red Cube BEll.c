@@ -800,12 +800,13 @@ task autonomous()
   intake(600, 127);
   backward(10, 50);
   clear();
-  turnRight(735, 70);
+  turnRight(750, 70);
   clear();
-  forward(120, 50);
+  forward(90, 50);
 	lift(700, 127);
   /*
   //Setup Approach Angle for Outtaking Cube
+
   turnLeft(50, 70);
   Sleep(50);
   forward(500, 70);
@@ -840,6 +841,7 @@ task autonomous()
 // This task is used to control your robot during the user control phase of a VEX Competition.
 // You must modify the code to add your own robot specific commands here.
 //
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 task usercontrol()

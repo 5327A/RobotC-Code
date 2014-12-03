@@ -47,7 +47,7 @@ int selectbtn = 2;		//LCD Select Button
 int rightbtn = 4;			//LCD Right Button
 int backbtn = 5;			//LCD Back Button
 int resetbtn = 7;			//LCD Reset Button
-int autonSelect = 0;	//LCD Autonomous Selecting Variable
+int autonSelect = 2;	//LCD Autonomous Selecting Variable
 //Main Screen Options Array
 string mainScreen[4] = {"<- Autonomous ->", "<- Statistics ->", "<- Battery V. ->", "<-  Controls  ->"};
 //Autonomous Select Screen Options Array
@@ -843,10 +843,13 @@ task autonomous()
 	  intake(600, 127);
 	  backward(10, 50);
 	  clear();
-	  turnRight(750, 70);
+	  turnRight(785, 70);
 	  clear();
-	  forward(90, 50);
 		lift(700, 127);
+		clear();
+		forward(110, 50);
+		outtake(1500, 127);
+  	backward(500, 127);
 	}
 	else if(autonSelect == 2){		//Blue Cube
 		//Setup Phase
@@ -867,8 +870,13 @@ task autonomous()
 	  clear();
 	  turnLeft(735, 70);
 	  clear();
-	  forward(120, 50);
 		lift(700, 127);
+		clear();
+		forward(110, 50);
+		clear();
+		outtake(1500, 127);
+		clear();
+	  backward(500, 127);
 	}
 	else if(autonSelect == 3){		//Cube Backup
 		//Setup Phase
@@ -884,6 +892,7 @@ task autonomous()
 		nMotorEncoder[LLift] = 0;
 		backward(60, 127)
 		lift(750, 127);
+		clear();
 	  outtake(1500, 127);
 	  backward(500, 127);
 	}

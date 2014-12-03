@@ -790,15 +790,14 @@ task autonomous()
 	backward(100, 127);
 	clear();
 	clear();
-	//lift(370, 127);
-	lift(390, 127);
+	lift(370, 127);
 	//down(10, 60);
 	clear();
-	outtake(790, 70);
+	outtake(800, 70);
 	clear();
 
 	//Move Towards Cube and Intake Cube
-	forward(220, 50);
+	forward(240, 50);
 	Sleep(500);
   clear();
   lift(700, 127);
