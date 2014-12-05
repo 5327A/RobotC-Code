@@ -13,15 +13,15 @@ void intakeTo(int IME_VALUE_DEST){
 	}
 }
 
-void shiftin(int ROTATION_DIRECTION){
-	if(ROTATION_DIRECTION == 0){
+void shiftin(bool ROTATION_DIRECTION){
+	if(!ROTATION_DIRECTION){
 		if(CURRENT_SHIFT == 0){
 			CURRENT_SHIFT = 5;
 		}
 		CURRENT_SHIFT--;
 		outtake(hookValues[CURRENT_SHIFT], 127);
 	}
-	else if(ROTATION_DIRECTION == 1){
+	else if(ROTATION_DIRECTION){
 		if(CURRENT_SHIFT == 4){
 			CURRENT_SHIFT = -1;
 		}
@@ -38,6 +38,7 @@ task main()
 	hookValues[3] = -2237;
 	hookValues[4] = -3008;
 	while(true){
+		nMotorEncoder[RIntake] = nMotorEncoder[RIntake]%3605;
 		if(vexRT[Btn8U] == 1){
 			shiftin(1);
 		}
