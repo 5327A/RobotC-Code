@@ -60,6 +60,8 @@ string BLME;						//LCD Back Left Base IME String Parse Destination
 string BRME;						//LCD Back Right Base IME String Parse Destination
 string LLME;						//LCD Left Lift IME String Parse Destination
 string RIME;						//LCD Right Intake IME String Parse Destination
+int CURRENT_SHIFT = 0;
+int hookValues[5];
 
 float pidL(int WantedVal, int DRIVE_MAX, int DRIVE_MIN)
 {
@@ -981,7 +983,6 @@ task usercontrol()
 	int intakerise = 280;							//Skyrise Intake
 	bool autotap = 0;
 	int resetIME = 0;
-	int hookValues[5];
 	hookValues[0] = 0;
 	hookValues[1] = -724;
 	hookValues[2] = -1501;
@@ -989,7 +990,6 @@ task usercontrol()
 	hookValues[4] = -3008;
 	int fullRound = -3605;
 	int fallback = 0;
-	int CURRENT_SHIFT = 0;
 	SensorValue[Shift] = 0;						//Pnuematic Default Position
 	while(true)
 	{
