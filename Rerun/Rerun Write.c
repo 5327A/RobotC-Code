@@ -33,7 +33,7 @@ task main()
 
 		bLCDBacklight = 0;
 
-    if( RCFS_AddFile( robotData, 14988, "robotData" ) == RCFS_ERROR ){
+    if( RCFS_AddFile( robotData, 14988, "rerunTest" ) == RCFS_ERROR ){
         writeDebugStreamLine("File write error");
     }
 
