@@ -12,31 +12,6 @@
 
 static char robotData[14988];
 
-task main()
-{
-	startTask(rerun);
-	motor[FLBase] = vexRT(Ch3);
-	motor[BLBase] = vexRT(Ch3);
-	motor[FRBase] = vexRT(Ch2);
-	motor[BRBase] = vexRT(Ch2);
-	if(vexRT(Btn5U==1){
-		motor[LLift] = 127;
-		motor[RLift] = 127;
-	}
-	else if(vexRT(Btn5D==1){
-		motor[LLift] = -127;
-		motor[RLift] = -127;
-	}
-	if(vexRT(vexRT(Btn6U)==1){
-		motor[LIntake] = 127;
-		motor[RIntake] = 127;
-	}
-	else if(vexRT(Btn6D)==1){
-		motor[LIntake] = -127;
-		motor[RIntake] = -127;
-	}
-}
-
 task rerun()
 {
 		int i;
@@ -54,4 +29,29 @@ task rerun()
         writeDebugStreamLine("File write error");
     }
 
+}
+
+task main()
+{
+	startTask(rerun);
+	motor[FLBase] = vexRT(Ch3);
+	motor[BLBase] = vexRT(Ch3);
+	motor[FRBase] = vexRT(Ch2);
+	motor[BRBase] = vexRT(Ch2);
+	if(vexRT(Btn5U)==1){
+		motor[LLift] = 127;
+		motor[RLift] = 127;
+	}
+	else if(vexRT(Btn5D)==1){
+		motor[LLift] = -127;
+		motor[RLift] = -127;
+	}
+	if(vexRT(Btn6U)==1){
+		motor[LIntake] = 127;
+		motor[RIntake] = 127;
+	}
+	else if(vexRT(Btn6D)==1){
+		motor[LIntake] = -127;
+		motor[RIntake] = -127;
+	}
 }

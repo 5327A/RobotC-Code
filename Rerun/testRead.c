@@ -16,7 +16,7 @@ task main()
 
     RCFS_ReadVTOC();
 
-    if( RCFS_GetFile( "a", &data, &datalength ) == RCFS_SUCCESS )
+    if( RCFS_GetFile( "judge", &data, &datalength ) == RCFS_SUCCESS )
     {
       while(i<datalength){
         motor[port2] = *(data+i);
