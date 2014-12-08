@@ -25,7 +25,7 @@ task rerun()
         wait1Msec(6);
     }
 
-    if( RCFS_AddFile( robotData, 14988, "atad") == RCFS_ERROR ){
+    if( RCFS_AddFile( robotData, 14988) == RCFS_ERROR ){
         writeDebugStreamLine("File write error");
     }
 

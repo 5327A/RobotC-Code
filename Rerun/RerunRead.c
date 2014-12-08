@@ -18,7 +18,7 @@ task main()
 
     RCFS_ReadVTOC();
 
-    if( RCFS_GetFile( "a", &data, &datalength ) == RCFS_SUCCESS )
+    if( RCFS_GetFile( "rerun", &data, &datalength ) == RCFS_SUCCESS )
     {
       while(i<datalength){
         motor[FLBase] = *(data+i);
