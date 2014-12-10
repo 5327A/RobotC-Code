@@ -60,6 +60,8 @@ string BLME;						//LCD Back Left Base IME String Parse Destination
 string BRME;						//LCD Back Right Base IME String Parse Destination
 string LLME;						//LCD Left Lift IME String Parse Destination
 string RIME;						//LCD Right Intake IME String Parse Destination
+int CURRENT_SHIFT = 0;
+int hookValues[5];
 
 float pidL(int WantedVal, int DRIVE_MAX, int DRIVE_MIN)
 {
@@ -339,6 +341,32 @@ void transmission(){											//Change transmission mode
 		SensorValue[Shift] = 1;
 	else if(SensorValue[Shift] == 1)
 		SensorValue[Shift] = 0;
+}
+
+void intakeTo(int IME_VALUE_DEST){
+	if((nMotorEncoder[RIntake]-IME_VALUE_DEST)%3605<-1802){
+		outtake(IME_VALUE_DEST, 127);
+	}
+	else{
+		intake(IME_VALUE_DEST, 127);
+	}
+}
+
+void shiftin(bool ROTATION_DIRECTION){
+	if(!ROTATION_DIRECTION){
+		if(CURRENT_SHIFT == 0){
+			CURRENT_SHIFT = 5;
+		}
+		CURRENT_SHIFT--;
+		outtake(hookValues[CURRENT_SHIFT], 127);
+	}
+	else if(ROTATION_DIRECTION){
+		if(CURRENT_SHIFT == 4){
+			CURRENT_SHIFT = -1;
+		}
+		CURRENT_SHIFT++;
+		intake(hookValues[CURRENT_SHIFT], 127);
+	}
 }
 
 task lcd()
@@ -954,6 +982,14 @@ task usercontrol()
 	int large = 1230;									//High Goal
 	int intakerise = 280;							//Skyrise Intake
 	bool autotap = 0;
+	int resetIME = 0;
+	hookValues[0] = 0;
+	hookValues[1] = -724;
+	hookValues[2] = -1501;
+	hookValues[3] = -2237;
+	hookValues[4] = -3008;
+	int fullRound = -3605;
+	int fallback = 0;
 	SensorValue[Shift] = 0;						//Pnuematic Default Position
 	while(true)
 	{
@@ -1210,6 +1246,19 @@ task usercontrol()
 		{
 			motor[LIntake] = -127;
 			motor[RIntake] = -127;
+		}
+		nMotorEncoder[RIntake] = nMotorEncoder[RIntake]%3605;
+		if(vexRT[Btn8UXmtr2] == 1){					//Intake Precision
+			shiftin(1);
+		}
+		else if(vexRT[Btn8DXmtr2] == 1){
+			shiftin(0);
+		}
+		else if(vexRT[Btn8RXmtr2] == 1){
+			intakeTo(hookValues[0]);
+		}
+		else if(vexRT[Btn8LXmtr2] == 1){
+			intakeTo(hookValues[4]);
 		}
 		else if(vexRT[Btn6UXmtr2] == 1)				//Intake Reset
 		{
