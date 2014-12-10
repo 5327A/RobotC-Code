@@ -14,8 +14,7 @@ task main()
         wait1Msec(6);
     }
 
-    if( RCFS_AddFile( robotData, 14988, "judge") == RCFS_ERROR ){
-        writeDebugStreamLine("File write error");
+    RCFS_AddFile();
     }
 
 }
