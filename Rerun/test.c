@@ -1,4 +1,4 @@
-#include <FlashLib.h>
+#include <file.h>
 
 static char robotData[6000];
 task main()
@@ -12,8 +12,7 @@ task main()
         wait1Msec(10);
     }
 
-    if( RCFS_AddFile( robotData, 6000, "judgeData") == RCFS_ERROR ){
-        writeDebugStreamLine("File write error");
+    RFCS_AddFile();
     }
 
 }
