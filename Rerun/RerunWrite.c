@@ -22,7 +22,7 @@ task rerun()
         robotData[i+3] = vexRT[Btn5D];
         robotData[i+4] = vexRT[Btn6U];
         robotData[i+5] = vexRT[Btn6D];
-        wait1Msec(6);
+        wait1Msec(6.4);
     }
 
     RFCS_AddFile();
